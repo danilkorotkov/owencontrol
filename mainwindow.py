@@ -697,6 +697,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.actq.setShortcutContext(Qt.ApplicationShortcut)
         self.addAction(self.actq)
         QObject.connect(self.actq, SIGNAL("triggered()"), self.RunAway)
+        # Exit CTRL+Й
+        self.actqr = QAction(self)
+        self.actqr.setShortcut("CTRL+Й")       
+        self.actqr.setShortcutContext(Qt.ApplicationShortcut)
+        self.addAction(self.actqr)
+        QObject.connect(self.actqr, SIGNAL("triggered()"), self.RunAway)
 
     @pyqtSlot()    
     def set_adc(self):#запуск ацп в потоке
