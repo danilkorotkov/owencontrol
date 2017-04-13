@@ -277,7 +277,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     pi.hardware_PWM(SSRPwm0, Freq, 0)
                     self.State1=0
                     self.justStarted1=0
-            save_log(file_name_1,self.MTemp1,i,self.State1,self.Fan1_On)
+            save_log(file_name_1,self.MTemp1,i,self.State1,self.Fan1_On, self.Heater1)
             
         if self.Line_35==1:
             #---------heaters control------------------------
@@ -348,7 +348,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     pi.hardware_PWM(SSRPwm1, Freq, 0)
                     self.State2=0
                     self.justStarted2=0
-            save_log(file_name_2,self.MTemp2,p,self.State2,self.Fan2_On)                    
+            save_log(file_name_2,self.MTemp2,p,self.State2,self.Fan2_On, self.Heater2)                    
 
 
     @pyqtSlot()
@@ -989,11 +989,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
 
 #------------globals func-----------------------------
-def save_log(file_name,temp,power,state,fan_state):
+def save_log(file_name,temp,power,state,fan_state,heater):
     t=time.time()
     if file_name != '':
         file=open(file_name, "a" )
-        file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+'\n')
+        file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)'\n')
         file.close()
 
 def read_settings():
