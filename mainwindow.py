@@ -118,7 +118,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     startTime1=0
     startTime2=0
     countdown1=0
-    countdown1=0
+    countdown2=0
     level=[0*10000,25*10000,50*10000,75*10000,100*10000]
     
     Fan1Interval=FI # запуск по FT через 300 сек
@@ -199,14 +199,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.justStarted1=1
             self.State1=0
             
-            file_name_1='1_'+str(int(time.time()))+'.txt'
+            file_name_1=str(int(time.time()))+'_1_'+str(self.T1)+'.txt'
             
         if self.justStarted2==0 and self.Line_35:
             self.startTime2=datetime.datetime.now()
             self.justStarted2=1
-            self.State2=1
+            self.State2=0
             
-            file_name_2='2_'+str(int(time.time()))+'.txt'
+            file_name_2=str(int(time.time()))+'_2_'+str(self.T2)+'.txt'
             
         if self.Line_65==1:
             #---------heaters control------------------------
@@ -993,7 +993,7 @@ def save_log(file_name,temp,power,state,fan_state,heater):
     t=time.time()
     if file_name != '':
         file=open(file_name, "a" )
-        file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)'\n')
+        file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
         file.close()
 
 def read_settings():
