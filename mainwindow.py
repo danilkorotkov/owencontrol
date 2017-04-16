@@ -9,6 +9,7 @@ from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
 import metrocss
 from UserData import UserData
 from LongButton import LongButton
+from graphwindow import GraphWindow
 
 #-------------------windows----------------------------
 MainInterfaceWindow = "metro_uic.ui" 
@@ -182,11 +183,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.Fan1.pressed.connect(self.SetFans)
         self.Fan2.pressed.connect(self.SetFans)
         
+     #--------------history button set-------------------- 
+        self.HistoryGraph.pressed.connect(self.ViewHistory)
+        
 #-------------------------------------------------
 #---------------end app window--------------------
 
 
 #----------------------------methods------------------------------
+    @pyqtSlot()
+    def ViewHistory(self):
+        self.HistoryGraph.setStyleSheet(metrocss.prog_active)
+        self.LogsView=GraphWindow(self)
+        self.LogsView.show()
+        self.HistoryGraph.setStyleSheet(metrocss.prog_passive)
+
     @pyqtSlot()
     def DoMainWork(self):
         global file_name_1, file_name_2
@@ -531,7 +542,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         GPIO.cleanup()
         self.close()
 
-    def __del__ ( self ):#какая-то системная хуйня
+    def __del__ ( self ):#какая-то системная 
         self.ui = None
 
     @pyqtSlot()
@@ -992,7 +1003,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 def save_log(file_name,temp,power,state,fan_state,heater):
     t=time.time()
     if file_name != '':
-        file=open(file_name, "a" )
+        file=open("logs/"+file_name, "a" )
         file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
         file.close()
 

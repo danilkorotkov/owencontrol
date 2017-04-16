@@ -523,7 +523,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>15</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -573,7 +573,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>169</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -623,7 +623,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>322</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -673,7 +673,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>475</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -718,7 +718,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>382</y>
+      <y>371</y>
       <width>425</width>
       <height>76</height>
      </rect>
@@ -770,7 +770,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>15</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -816,7 +816,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>322</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -862,7 +862,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>651</x>
-      <y>860</y>
+      <y>836</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -907,7 +907,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>627</y>
+      <y>603</y>
       <width>425</width>
       <height>76</height>
      </rect>
@@ -959,7 +959,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>475</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1005,7 +1005,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>169</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1047,11 +1047,11 @@ color:black;
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="History1">
+   <widget class="QPushButton" name="HistoryGraph">
     <property name="geometry">
      <rect>
       <x>475</x>
-      <y>860</y>
+      <y>836</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1193,7 +1193,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>651</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1335,7 +1335,7 @@ color:white;
     <property name="geometry">
      <rect>
       <x>746</x>
-      <y>627</y>
+      <y>603</y>
       <width>425</width>
       <height>76</height>
      </rect>
@@ -1387,7 +1387,7 @@ color:white;
     <property name="geometry">
      <rect>
       <x>958</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1476,7 +1476,7 @@ color:white;
     <property name="geometry">
      <rect>
       <x>958</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1626,7 +1626,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>1111</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1776,7 +1776,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>1111</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -1925,7 +1925,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>746</x>
-      <y>382</y>
+      <y>371</y>
       <width>425</width>
       <height>76</height>
      </rect>
@@ -1977,7 +1977,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>805</x>
-      <y>461</y>
+      <y>450</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -2027,7 +2027,7 @@ color:black;
     <property name="geometry">
      <rect>
       <x>651</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -2125,7 +2125,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>805</x>
-      <y>704</y>
+      <y>680</y>
       <width>150</width>
       <height>148</height>
      </rect>
@@ -2395,7 +2395,7 @@ p, li { white-space: pre-wrap; }
    <zorder>Calibr</zorder>
    <zorder>Sensor1_2</zorder>
    <zorder>Fan1_Allow</zorder>
-   <zorder>History1</zorder>
+   <zorder>HistoryGraph</zorder>
    <zorder>Fan2</zorder>
    <zorder>Channel4</zorder>
    <zorder>p2_1</zorder>

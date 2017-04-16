@@ -26,9 +26,11 @@
         <file>metrocss.py</file>
         <file>UserData.py</file>
         <file>LongButton.py</file>
+        <file>graphwindow.py</file>
     </variable>
     <variable name="FORMS">
         <file>metro_uic.ui</file>
         <file>datainput.ui</file>
+        <file>graphwindow.ui</file>
     </variable>
 </project>
