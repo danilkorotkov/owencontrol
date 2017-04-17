@@ -2371,6 +2371,51 @@ p, li { white-space: pre-wrap; }
      <set>Qt::NoTextInteraction</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="lockbut">
+    <property name="geometry">
+     <rect>
+      <x>322</x>
+      <y>836</y>
+      <width>150</width>
+      <height>148</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+font: 16pt &quot;Free Helvetian&quot;;
+color:black;
+ text-align: center;
+ background-color: rgb(194, 194, 194);
+</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>140</width>
+      <height>140</height>
+     </size>
+    </property>
+   </widget>
    <zorder>Channel1</zorder>
    <zorder>Channel3</zorder>
    <zorder>Channel2</zorder>
@@ -2419,6 +2464,7 @@ p, li { white-space: pre-wrap; }
    <zorder>Rate2</zorder>
    <zorder>Fan2_Allow</zorder>
    <zorder>InfoPanel2</zorder>
+   <zorder>lockbut</zorder>
   </widget>
  </widget>
  <resources/>
