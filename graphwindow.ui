@@ -61,9 +61,9 @@ color:black;
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>50</y>
       <width>171</width>
-      <height>831</height>
+      <height>791</height>
      </rect>
     </property>
     <property name="focusPolicy">
@@ -188,6 +188,24 @@ font: 14pt &quot;Free Helvetian&quot;;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(194, 194, 194);</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(194, 194, 194);
+color:black;
+font: 14pt &quot;Free Helvetian&quot;;</string>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;СПИСОК&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
