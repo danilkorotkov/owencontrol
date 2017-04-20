@@ -6,11 +6,14 @@ from PyQt4.QtGui import *
 #from PyQt4.QtGui import QIcon, QAction, QKeySequence, QMessageBox
 import RPi.GPIO as GPIO
 from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
+
+#-------------------user classes----------------------------
 import metrocss
 from UserData import UserData
-from LongButton import LongButton
+from LongButton import LongButton, LockThread
+from graphwindow import GraphWindow
 
-#-------------------windows----------------------------
+#-------------------window forms----------------------------
 MainInterfaceWindow = "metro_uic.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(MainInterfaceWindow)
 
@@ -40,13 +43,15 @@ Mux=(C,B,A)
 spi = spidev.SpiDev()
 pi = pigpio.pi() # Connect to local host.
 
+
+
 #--------------temp measure-----------------------
 class TempThread(QtCore.QThread): # работа с АЦП в потоке 
     def __init__(self, temp_signal, parent=None):
         super(TempThread, self).__init__(parent)
         self.temp_signal = temp_signal
         self.isRun=False
-        self.Va=range(7)
+        self.Va=list(range(7))
 
     def run(self):
         while self.isRun:
@@ -72,7 +77,7 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
             M0 += dato
             muestras += 1
         dato = M0/50
-        V = long(dato) * 2.5 / 8192.0;    
+        V = dato * 2.5 / 8192.0;    
         return V
 
     def SetChannel(self,Ch):
@@ -89,6 +94,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     temp_signal = QtCore.pyqtSignal(list)
     user_data_signal = QtCore.pyqtSignal(int,int)
+    lock_signal=QtCore.pyqtSignal()
+    
     Fan1_On=0 #fan on/off = 0/1
     Fan2_On=0
     Line_65=0 #line on=1 line off=0
@@ -97,9 +104,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     TRate1=[] #log набора температуры
     TRate2=[]
     deltaTRate1=0 #хранение текущей скорости роста температуры
-    deltaTRate1=0
+    deltaTRate2=0
     iconOn = QtGui.QIcon()
     iconOff = QtGui.QIcon()
+    iconLock=QtGui.QIcon()
+    iconUnlock=QtGui.QIcon()
     MTemp1=0.0 #храним вычисленное значение температуры
     Mtemp2=0.0
     WaitText="ГОТОВ К ЗАПУСКУ"
@@ -111,6 +120,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     Heater1=0 # температура тэнов
     Heater2=0
     
+    lockedBut=True
     State1=0 #флаги состояния нагрев/выдержка
     State2=0
     justStarted1=0 #флаги начала отсчета времени
@@ -118,10 +128,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     startTime1=0
     startTime2=0
     countdown1=0
-    countdown1=0
+    countdown2=0
     level=[0*10000,25*10000,50*10000,75*10000,100*10000]
     
-    Fan1Interval=FI # запуск по FT через 300 сек
+    FI=300
+    FT=15
+    
+    Fan1Interval=FI # запуск по 15 через 300 сек
     Fan1Time=FT
     Fan2Interval=FI
     Fan2Time=FT
@@ -134,8 +147,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.iconOff.addPixmap(QtGui.QPixmap("Fanoff.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.iconOn.addPixmap(QtGui.QPixmap("Fanon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     #--------------ini set--------------------
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -182,11 +193,42 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.Fan1.pressed.connect(self.SetFans)
         self.Fan2.pressed.connect(self.SetFans)
         
+     #--------------history button set-------------------- 
+        self.HistoryGraph.pressed.connect(self.ViewHistory)
+        
+     #--------------history button set-------------------- 
+        self.lockVirt.pressed.connect(self.UnlockButtons)
+        self.lock_signal.connect(self.LockButtons, QtCore.Qt.QueuedConnection)
+        
 #-------------------------------------------------
 #---------------end app window--------------------
 
 
 #----------------------------methods------------------------------
+    @pyqtSlot()
+    def LockButtons (self):
+        self.lockedBut=True
+        self.lockbut.setIcon(self.iconLock)
+        self.lockbut.setStyleSheet(metrocss.SetButtons_passive)    
+
+    @pyqtSlot()
+    def UnlockButtons (self):
+        sender=self.sender()
+        longpressed=sender.longpressed
+        if longpressed==0: return
+        self.lockedBut=False
+        self.lockbut.setIcon(self.iconUnlock)
+        self.lockbut.setStyleSheet(metrocss.SetButtons_active)
+        self.lockthread.start()        
+        
+    @pyqtSlot()
+    def ViewHistory(self):
+        if self.lockedBut: return
+        self.HistoryGraph.setStyleSheet(metrocss.prog_active)
+        self.LogsView=GraphWindow(self)
+        self.LogsView.show()
+        self.HistoryGraph.setStyleSheet(metrocss.prog_passive)
+
     @pyqtSlot()
     def DoMainWork(self):
         global file_name_1, file_name_2
@@ -199,14 +241,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.justStarted1=1
             self.State1=0
             
-            file_name_1='1_'+str(int(time.time()))+'.txt'
+            file_name_1=str(int(time.time()))+'_1_'+str(self.T1)+'.txt'
             
         if self.justStarted2==0 and self.Line_35:
             self.startTime2=datetime.datetime.now()
             self.justStarted2=1
-            self.State2=1
+            self.State2=0
             
-            file_name_2='2_'+str(int(time.time()))+'.txt'
+            file_name_2=str(int(time.time()))+'_2_'+str(self.T2)+'.txt'
             
         if self.Line_65==1:
             #---------heaters control------------------------
@@ -277,7 +319,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     pi.hardware_PWM(SSRPwm0, Freq, 0)
                     self.State1=0
                     self.justStarted1=0
-            save_log(file_name_1,self.MTemp1,i,self.State1,self.Fan1_On)
+            save_log(file_name_1,self.MTemp1,i,self.State1,self.Fan1_On, self.Heater1)
             
         if self.Line_35==1:
             #---------heaters control------------------------
@@ -348,7 +390,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     pi.hardware_PWM(SSRPwm1, Freq, 0)
                     self.State2=0
                     self.justStarted2=0
-            save_log(file_name_2,self.MTemp2,p,self.State2,self.Fan2_On)                    
+            save_log(file_name_2,self.MTemp2,p,self.State2,self.Fan2_On, self.Heater2)                    
 
 
     @pyqtSlot()
@@ -531,11 +573,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         GPIO.cleanup()
         self.close()
 
-    def __del__ ( self ):#какая-то системная хуйня
+    def __del__ ( self ):#какая-то системная 
         self.ui = None
 
     @pyqtSlot()
     def ParamsSet(self):#работа кнопок Параметры
+        if self.lockedBut: return
         sender=self.sender()
         
         #------------------heater sensors----------------------
@@ -711,7 +754,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tempthreadcontrol(1)
         
     def closeEvent(self, event):#переопределяем закрытие окна
-         self.RunAway()
+        self.RunAway()
 
     def ShowResults(self, Tin):#вывод температуры на рабочую зону
         #-------------рассчитываем температуры по разрешенным датчикам---------
@@ -880,7 +923,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         save_settings(sets)                
 
     @pyqtSlot()
-    def call_ini_set(self):#установка первоначального состояния из файла настроек
+    def call_ini_set(self):#установка первоначального & состояния из файла настроек
+        self.iconOff.addPixmap(QtGui.QPixmap("Fanoff.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.iconOn.addPixmap(QtGui.QPixmap("Fanon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.iconLock.addPixmap(QtGui.QPixmap("lock.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.iconUnlock.addPixmap(QtGui.QPixmap("unlock.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    
+        #---------lock buttons-----------
+        self.lockedBut=True
+        self.lockbut.setIcon(self.iconLock)
+        self.lockbut.setStyleSheet(metrocss.SetButtons_passive)
+        self.lockthread=LockThread(self.lock_signal)
+        
+        
         #---------initial default prog set-----------
         if sets['start_prog1']==1:
             self.set_prog(1,1)
@@ -986,20 +1041,32 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.StopVirt2.setAcceptDrops(False)
         self.StopVirt2.setStyleSheet(_fromUtf8("border-style: outset;background-color: none;"))
         
+        self.lockVirt = LongButton(self.centralwidget, name="lockVirt")
+        self.lockVirt.setGeometry(QtCore.QRect(322, 836, 150, 148))
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lockVirt.sizePolicy().hasHeightForWidth())
+        self.lockVirt.setSizePolicy(sizePolicy)
+        self.lockVirt.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.lockVirt.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.lockVirt.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        self.lockVirt.setAcceptDrops(False)
+        self.lockVirt.setStyleSheet(_fromUtf8("border-style: outset;background-color: none;"))
+
         
 
 #------------globals func-----------------------------
-def save_log(file_name,temp,power,state,fan_state):
+def save_log(file_name,temp,power,state,fan_state,heater):
     t=time.time()
     if file_name != '':
-        file=open(file_name, "a" )
-        file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+'\n')
-        file.close()
+        with open("logs/"+file_name, "a" ) as log_file:
+            log_file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
+
 
 def read_settings():
     global sets
     try:
-        with open('settings.txt', 'rb') as csvfile:
+        with open('settings.txt', 'rt') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='=', quotechar='|')
             for row in spamreader:
                 k, v = row
@@ -1009,7 +1076,7 @@ def read_settings():
                     line=v
                     line=line.replace('[','')
                     line=line.replace(']','')
-                    sets[k] = string.split(line,",")
+                    sets[k] = line.split(",")
                     s=len(sets[k])
                     i=0
                     while i<s:                
@@ -1023,7 +1090,7 @@ def read_settings():
         
 
 def save_settings(sets):
-    with open('settings.txt', 'wb') as csvfile:
+    with open('settings.txt', 'wt') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='=',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for key, val in sets.items():
