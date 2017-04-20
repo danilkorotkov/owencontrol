@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys, os, time, spidev, pigpio, csv, string
+import sys, os, time, string
 from PyQt4 import QtCore, QtGui, uic 
 from PyQt4.Qt import Qt
 from PyQt4.QtGui import *
-from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
+from PyQt4.QtCore import QObject, SIGNAL
 
 MainInterfaceWindow = "graphwindow.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(MainInterfaceWindow)
@@ -12,10 +12,13 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(MainInterfaceWindow)
 class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
     """MainWindow inherits QMainWindow"""
     path="logs/"
+    lf1=[]
+    
     def __init__ ( self, parent = None ):
         super(GraphWindow, self).__init__(parent)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.setWindowModality(QtCore.Qt.WindowModal)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.listWidget.verticalScrollBar().setStyleSheet(_fromUtf8(
 "QScrollBar:vertical {width: 35px; background: rgb(194, 194, 194); margin: 0px;}\n"
@@ -31,7 +34,6 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         self.scene=QtGui.QGraphicsScene()
         self.graphicsView.setScene(self.scene)
         
-        self.lf1=[]
         self.test2()
  
     def __del__ ( self ):
@@ -59,13 +61,18 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
             self.lf1.append([])
             self.lf1[i].append(lf[i])
             t=lf[i].split('_')[0]
-            s=time.gmtime(float(t))
+            s=time.localtime(float(t))
             l=lf[i].split('_')[1]
             if l=="1":
                l=u"6,5 м"
             else:
                l=u"3,5 м" 
-            s='%s-%s-%s %s:%s' % (str(s[0])[2:],str(s[1]),str(s[2]),str(s[3]),str(s[4]))+u" Линия: "+l
+            
+            if s[4]<10:
+                minutes='0'+str(s[4])
+            else:
+                minutes=str(s[4])
+            s='%s-%s-%s %s:%s' % (str(s[0])[2:],str(s[1]),str(s[2]),str(s[3]),minutes)+u" Линия: "+l
             self.lf1[i].append(s)
         
 

@@ -6,12 +6,14 @@ from PyQt4.QtGui import *
 #from PyQt4.QtGui import QIcon, QAction, QKeySequence, QMessageBox
 import RPi.GPIO as GPIO
 from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
+
+#-------------------user classes----------------------------
 import metrocss
 from UserData import UserData
-from LongButton import LongButton
+from LongButton import LongButton, LockThread
 from graphwindow import GraphWindow
 
-#-------------------windows----------------------------
+#-------------------window forms----------------------------
 MainInterfaceWindow = "metro_uic.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(MainInterfaceWindow)
 
@@ -41,20 +43,7 @@ Mux=(C,B,A)
 spi = spidev.SpiDev()
 pi = pigpio.pi() # Connect to local host.
 
-#--------------lock buttons -----------------------
-class LockThread(QtCore.QThread):  
-    def __init__(self, lock_signal, parent=None):
-        super(LockThread, self).__init__(parent)
-        self.lock_signal = lock_signal
 
-
-    def run(self):
-        time.sleep(10)
-        self.lock_signal.emit()
-        
-
-    def stop(self):
-        pass
 
 #--------------temp measure-----------------------
 class TempThread(QtCore.QThread): # работа с АЦП в потоке 
@@ -1070,9 +1059,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 def save_log(file_name,temp,power,state,fan_state,heater):
     t=time.time()
     if file_name != '':
-        file=open("logs/"+file_name, "a" )
-        file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
-        file.close()
+        with open("logs/"+file_name, "a" ) as log_file:
+            log_file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
+
 
 def read_settings():
     global sets
