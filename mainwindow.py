@@ -51,7 +51,7 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
         super(TempThread, self).__init__(parent)
         self.temp_signal = temp_signal
         self.isRun=False
-        self.Va=range(7)
+        self.Va=list(range(7))
 
     def run(self):
         while self.isRun:
@@ -77,7 +77,7 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
             M0 += dato
             muestras += 1
         dato = M0/50
-        V = long(dato) * 2.5 / 8192.0;    
+        V = dato * 2.5 / 8192.0;    
         return V
 
     def SetChannel(self,Ch):
@@ -838,7 +838,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Tout={}
         while Ch <=6:
             p1=p+str(Ch)
-            realq=sets[p1][0]*Va[Ch]**3+sets[p1][1]*Va[Ch]**2+sets[p1][2]*Va[Ch]-sets[p1][3];
+            realq=sets[p1][0]*Va[Ch]**3+sets[p1][1]*Va[Ch]**2+sets[p1][2]*Va[Ch]+sets[p1][3];
             T="%.1f" % realq ##+ DEGREE            
             Tout[Ch]=T
             Ch +=1
@@ -1066,7 +1066,7 @@ def save_log(file_name,temp,power,state,fan_state,heater):
 def read_settings():
     global sets
     try:
-        with open('settings.txt', 'rb') as csvfile:
+        with open('settings.txt', 'rt') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='=', quotechar='|')
             for row in spamreader:
                 k, v = row
@@ -1076,7 +1076,7 @@ def read_settings():
                     line=v
                     line=line.replace('[','')
                     line=line.replace(']','')
-                    sets[k] = string.split(line,",")
+                    sets[k] = line.split(",")
                     s=len(sets[k])
                     i=0
                     while i<s:                
@@ -1090,7 +1090,7 @@ def read_settings():
         
 
 def save_settings(sets):
-    with open('settings.txt', 'wb') as csvfile:
+    with open('settings.txt', 'wt') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='=',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for key, val in sets.items():
