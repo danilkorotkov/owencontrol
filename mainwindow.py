@@ -838,7 +838,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Tout={}
         while Ch <=6:
             p1=p+str(Ch)
-            realq=sets[p1][0]*Va[Ch]**3+sets[p1][1]*Va[Ch]**2+sets[p1][2]*Va[Ch]-sets[p1][3];
+            realq=sets[p1][0]*Va[Ch]**3+sets[p1][1]*Va[Ch]**2+sets[p1][2]*Va[Ch]+sets[p1][3];
             T="%.1f" % realq ##+ DEGREE            
             Tout[Ch]=T
             Ch +=1
