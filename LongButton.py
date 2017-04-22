@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt4 import QtGui, QtCore
-
+import time
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -28,3 +28,18 @@ class LongButton( QtGui.QPushButton ):
             self.released=1
         else:
             self.released=0
+            
+#--------------lock buttons -----------------------
+class LockThread(QtCore.QThread):  
+    def __init__(self, lock_signal, parent=None):
+        super(LockThread, self).__init__(parent)
+        self.lock_signal = lock_signal
+
+
+    def run(self):
+        time.sleep(10)
+        self.lock_signal.emit()
+        
+
+    def stop(self):
+        pass

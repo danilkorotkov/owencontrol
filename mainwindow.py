@@ -12,6 +12,8 @@ import metrocss
 from UserData import UserData
 from LongButton import LongButton, LockThread
 from graphwindow import GraphWindow
+from PinCode import PinCode
+from calibrator import Calibrator
 
 #-------------------window forms----------------------------
 MainInterfaceWindow = "metro_uic.ui" 
@@ -94,7 +96,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     temp_signal = QtCore.pyqtSignal(list)
     user_data_signal = QtCore.pyqtSignal(int,int)
+    pincode_signal= QtCore.pyqtSignal(int)
     lock_signal=QtCore.pyqtSignal()
+    finish_signal=QtCore.pyqtSignal()
     
     Fan1_On=0 #fan on/off = 0/1
     Fan2_On=0
@@ -200,11 +204,42 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lockVirt.pressed.connect(self.UnlockButtons)
         self.lock_signal.connect(self.LockButtons, QtCore.Qt.QueuedConnection)
         
+     #--------------calibration button set--------------------
+        self.Calibr.pressed.connect(self.Calibration)
+        self.pincode_signal.connect(self.CheckPinCode, QtCore.Qt.QueuedConnection)
+        self.finish_signal.connect(self.ADC_ON, QtCore.Qt.QueuedConnection)
+        
 #-------------------------------------------------
 #---------------end app window--------------------
 
 
 #----------------------------methods------------------------------
+    def ADC_ON(self):
+            spi.open(0,0)
+            spi.max_speed_hz = 40000
+            self.tempthreadcontrol(1)
+        
+    def CheckPinCode(self, pin):
+        if pin==2502:
+            print ('ok code')
+            self.tempthreadcontrol(0)
+            spi.close()
+            self.CalibrWindow=Calibrator(self.finish_signal, self)
+            self.CalibrWindow.show()
+  
+        else:
+            print ('wrong code')
+        self.Calibr.setStyleSheet(metrocss.prog_passive)
+
+    @pyqtSlot()
+    def Calibration(self):
+        if self.lockedBut: return
+        self.Calibr.setStyleSheet(metrocss.prog_active)
+        self.CodeWindow=PinCode(self.pincode_signal, self)
+        self.CodeWindow.show()
+        self.CodeWindow.move(313, 195)
+
+        
     @pyqtSlot()
     def LockButtons (self):
         self.lockedBut=True
@@ -568,6 +603,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 if self.Fan2_On: self.SetFans(2)
 
     def All_is_Clear(self):#корректное завершение
+        self.tempthreadcontrol(0)
+        time.sleep(1)
         spi.close()
         pi.stop()
         GPIO.cleanup()

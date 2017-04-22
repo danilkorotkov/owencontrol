@@ -27,10 +27,13 @@
         <file>UserData.py</file>
         <file>LongButton.py</file>
         <file>graphwindow.py</file>
+        <file>PinCode.py</file>
+        <file>calibrator.py</file>
     </variable>
     <variable name="FORMS">
         <file>metro_uic.ui</file>
         <file>datainput.ui</file>
         <file>graphwindow.ui</file>
+        <file>calibrator.ui</file>
     </variable>
 </project>
