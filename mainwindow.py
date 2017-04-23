@@ -214,6 +214,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 
 #----------------------------methods------------------------------
+    @pyqtSlot()
     def ADC_ON(self):
             spi.open(0,0)
             spi.max_speed_hz = 40000
@@ -603,7 +604,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def All_is_Clear(self):#корректное завершение
         self.tempthreadcontrol(0)
-        time.sleep(1)
+        #time.sleep(1)        
+
         spi.close()
         pi.stop()
         GPIO.cleanup()
@@ -775,13 +777,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.actq.setShortcut("CTRL+Q")       
         self.actq.setShortcutContext(Qt.ApplicationShortcut)
         self.addAction(self.actq)
-        QObject.connect(self.actq, SIGNAL("triggered()"), self.RunAway)
+        QObject.connect(self.actq, SIGNAL("triggered()"), self.All_is_Clear)
         # Exit CTRL+Й
         self.actqr = QAction(self)
         self.actqr.setShortcut("CTRL+Й")       
         self.actqr.setShortcutContext(Qt.ApplicationShortcut)
         self.addAction(self.actqr)
-        QObject.connect(self.actqr, SIGNAL("triggered()"), self.RunAway)
+        QObject.connect(self.actqr, SIGNAL("triggered()"), self.All_is_Clear)
 
     @pyqtSlot()    
     def set_adc(self):#запуск ацп в потоке
@@ -790,7 +792,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tempthreadcontrol(1)
         
     def closeEvent(self, event):#переопределяем закрытие окна
-        self.RunAway()
+        self.All_is_Clear()
 
     def ShowResults(self, Tin):#вывод температуры на рабочую зону
         #-------------рассчитываем температуры по разрешенным датчикам---------
@@ -882,11 +884,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def got_worker_msg(self,Va):#ловля сигнала от АЦП
         self.ShowResults(self.ConvertResults(Va))
-
-    def RunAway(self):#кусок корректного закрытия
-        self.tempthread.stop()
-        self.All_is_Clear()
-
     def tempthreadcontrol(self, command):#запуск/остановка потока
         if command==1:
             self.tempthread.isRun=True
