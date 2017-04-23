@@ -96,7 +96,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     temp_signal = QtCore.pyqtSignal(list)
     user_data_signal = QtCore.pyqtSignal(int,int)
-    pincode_signal= QtCore.pyqtSignal(int)
+    pincode_signal= QtCore.pyqtSignal(str)
     lock_signal=QtCore.pyqtSignal()
     finish_signal=QtCore.pyqtSignal()
     
@@ -220,15 +220,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.tempthreadcontrol(1)
         
     def CheckPinCode(self, pin):
-        if pin==2502:
-            print ('ok code')
+        if pin=='2502':
             self.tempthreadcontrol(0)
             spi.close()
             self.CalibrWindow=Calibrator(self.finish_signal, self)
             self.CalibrWindow.show()
   
         else:
-            print ('wrong code')
+            pass
         self.Calibr.setStyleSheet(metrocss.prog_passive)
 
     @pyqtSlot()

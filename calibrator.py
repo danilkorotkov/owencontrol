@@ -28,20 +28,6 @@ FT=15
 
 Mux=(C,B,A)
 spi = spidev.SpiDev()
-#--------------response buttons -----------------------
-class RespThread(QtCore.QThread):  
-    def __init__(self, resp_signal, parent=None):
-        super(RespThread, self).__init__(parent)
-        self.resp_signal = resp_signal
-
-
-    def run(self):
-        time.sleep(0.1)
-        self.resp_signal.emit()
-        
-
-    def stop(self):
-        pass
 #--------------------ADC Thread-------------
 class TempThread(QtCore.QThread): # работа с АЦП в потоке 
     def __init__(self, temp_signal, parent=None):
@@ -59,6 +45,8 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
 
     def stop(self):
         self.isRun=False
+        time.sleep(0.5)
+        spi.close()
 
     def GetADC(self): #все названия сохранены на языке автора функции
         M0 =0 
@@ -86,7 +74,6 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
 class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
     """Calibrator inherits QMainWindow"""
     temp_signal = QtCore.pyqtSignal(float)
-    resp_signal = QtCore.pyqtSignal()
     
     a = {
     'start_prog1':1,
@@ -137,16 +124,13 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
         self.finish_signal=finish_signal
 
         self.set_adc()
-        self.SetRespBut()
         
-        self.Exit.pressed.connect(self.Exit_)
         self.pBtn_Channel_1.setStyleSheet(CellSelect)
         self.R0.setStyleSheet(CellSelect)
         self.TextCoeff=str(self.Coeff[0])
 
         self.textEdit.setHtml(HtmlText(self.TextCoeff,self.Stored, ' '))
         
-        self.SaveButton.pressed.connect(self.save_settings)
         self.R0.pressed.connect(self.RB)
         self.R1.pressed.connect(self.RB)
         self.R2.pressed.connect(self.RB)
@@ -161,6 +145,14 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
 
         self.pushButton_2.pressed.connect(self.Get_Volts)
         self.pushButton_3.pressed.connect(self.Calc)
+        self.SaveButton.pressed.connect(self.save_settings)
+        
+        self.pushButton_2.released.connect(lambda: self.sender().setStyleSheet(ButPassive))
+        self.pushButton_3.released.connect(lambda: self.sender().setStyleSheet(ButPassive))
+        self.SaveButton.released.connect(lambda: self.sender().setStyleSheet(ButPassive))
+        
+        self.Exit.pressed.connect(self.Exit_)
+        self.Exit.released.connect(self.Exit__)
         
 
         
@@ -169,18 +161,14 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
 
 
 #----------------------methods-------------------------------
-    def Exit_(self):
-        self.finish_signal.emit()
+    def Exit__(self):
+        self.Exit.setStyleSheet(ButPassive)
         self.close()
-    def pass_but(self):
-        self.pushButton_2.setStyleSheet(ButPassive)
-        self.pushButton_3.setStyleSheet(ButPassive)
-        self.SaveButton.setStyleSheet(ButPassive)
         
-    def SetRespBut(self):
-        self.respthread=RespThread(self.resp_signal)
-        self.resp_signal.connect(self.pass_but, QtCore.Qt.QueuedConnection)
-        self.respthread.start()
+    def Exit_(self):
+        self.textEdit.setHtml(HtmlText(' ', u'Выход...', ' '))
+        self.Exit.setStyleSheet(ButActive)
+        self.finish_signal.emit()
     def changeRow(self):
         sender=self.sender()
         name=sender.objectName()
@@ -201,7 +189,6 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
         
         elif self.checkRow() & self.lineCalcked == 0:
             self.textEdit.setHtml(HtmlText(self.TextCoeff,self.Stored, self.TextErr1))
-            self.textEdit.setAlignment(Qt.AlignCenter)
             self.GroupChannel.checkedButton().setChecked(False)
             getattr(self, 'pBtn_Channel_'+str(self.C)).setChecked(True)
             
@@ -243,9 +230,8 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
 
 
     def Calc(self):
-        sender=self.sender()
-        sender.setStyleSheet(ButActive)
-        self.respthread.start()
+        self.pushButton_3.setStyleSheet(ButActive)
+        
         if self.checkRow() == 0:
             self.textEdit.setHtml(HtmlText(self.TextCoeff,self.Stored, self.TextErr2))
             return
@@ -259,9 +245,7 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
     
 
     def Get_Volts(self):
-        sender=self.sender()
-        sender.setStyleSheet(ButActive)
-        self.respthread.start()        
+        self.pushButton_2.setStyleSheet(ButActive)  
         
         self.isItStart=1
         self.Volts[self.R][1]=True
@@ -423,9 +407,8 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
         self.R=int(name[s-1])
     def save_settings(self):
         sets=self.a
-        sender=self.sender()
-        sender.setStyleSheet(ButActive)
-        self.respthread.start()
+        self.SaveButton.setStyleSheet(ButActive)
+
         with open('settings.txt', 'wt') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter='=',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)

@@ -20,11 +20,10 @@ class PinCode(QtGui.QMainWindow, Ui_InputWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.signal=user_data_signal
-        self.label1=u'ПинКод'
-        self.data=0
+        self.label1=u'ПИНКОД'
+        self.data=''
         self.UserData.setHtml(metrocss.Show_Main_Temp(''))
 
-        self.code=0
         self.label.setText(metrocss.SetLabelText(self.label1))
         self.label.setAlignment(Qt.AlignCenter)
         
@@ -62,52 +61,27 @@ class PinCode(QtGui.QMainWindow, Ui_InputWindow):
         name = sender.objectName()
         if name[1] in ('1','2','3','4','5','6','7','8','9','0') :
             point=name[1]
-            point=int(point)
             sender.setStyleSheet(metrocss.data_active)
-
-            if self.data==0:
-                self.data=point
-                self.UserData.setHtml(metrocss.Show_Main_Temp(d))
-            elif self.data>1000:
-                pass
-            else:
-                self.data=self.data*10+point
-                if self.data>=0 and self.data<10:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d))
-                elif self.data>9 and self.data<100:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d+d))
-                elif self.data>99 and self.data<1000:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d+d+d))
-                elif self.data>999:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d+d+d+d))
+            self.data=self.data+point
+            self.UserData.setHtml(metrocss.Show_Main_Temp(d*len(self.data)))
 
 
         if sender==self.bdel:
             sender.setStyleSheet(metrocss.data_active)
 
-            if self.data==0:
+            if len(self.data)==0:
                 pass
             else:
-                self.data=self.data//10
-                if self.data==0:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(''))
-                elif self.data>0 and self.data<10:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d))
-                elif self.data>9 and self.data<100:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d+d))
-                elif self.data>99 and self.data<1000:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d+d+d))
-                elif self.data>999:
-                    self.UserData.setHtml(metrocss.Show_Main_Temp(d+d+d+d))
+                self.data=self.data[0:-1]
+                self.UserData.setHtml(metrocss.Show_Main_Temp(d*len(self.data)))
 
 
         if sender==self.bok:
-            sender.setStyleSheet(metrocss.data_active)
-            self.code=self.data       
+            sender.setStyleSheet(metrocss.data_active)    
         
     def Clear(self):
         sender = self.sender()
         sender.setStyleSheet(metrocss.data_passive)
         if sender==self.bok:
-            self.signal.emit(self.code)
+            self.signal.emit(self.data)
             self.close()
