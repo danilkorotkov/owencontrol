@@ -9,6 +9,7 @@ import metrocss
 InputWindow = "datainput.ui"
 Ui_InputWindow, QtBaseClass = uic.loadUiType(InputWindow)
 
+
 class UserData(QtGui.QMainWindow, Ui_InputWindow):
     def __init__(self, user_data_signal, parent=None):
         

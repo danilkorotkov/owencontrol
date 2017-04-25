@@ -14,13 +14,14 @@ from LongButton import LongButton, LockThread
 from graphwindow import GraphWindow
 from PinCode import PinCode
 from calibrator import Calibrator
+from timelabel import TimeThread
 
 #-------------------window forms----------------------------
 MainInterfaceWindow = "metro_uic.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(MainInterfaceWindow)
 
-InputWindow = "datainput.ui"
-Ui_InputWindow, QtBaseClass = uic.loadUiType(InputWindow)
+#InputWindow = "datainput.ui"
+#Ui_InputWindow, QtBaseClass = uic.loadUiType(InputWindow)
 
 #---------------globals--------------------------------
 
@@ -44,8 +45,6 @@ FT=15
 Mux=(C,B,A)
 spi = spidev.SpiDev()
 pi = pigpio.pi() # Connect to local host.
-
-
 
 #--------------temp measure-----------------------
 class TempThread(QtCore.QThread): # работа с АЦП в потоке 
@@ -95,6 +94,7 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     temp_signal = QtCore.pyqtSignal(list)
+    time_signal = QtCore.pyqtSignal(list)
     user_data_signal = QtCore.pyqtSignal(int,int)
     pincode_signal= QtCore.pyqtSignal(str)
     lock_signal=QtCore.pyqtSignal()
@@ -214,6 +214,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 
 #----------------------------methods------------------------------
+    def time_msg(self, out):
+        self.labeloftime.setText( \
+        _translate("Calibrator", "<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:400;\">%s</span></p><p align=\"center\"><span style=\" font-size:26pt; font-weight:400;\">%s</span></p><p align=\"center\"><span style=\" font-size:16pt; font-weight:400;\">%s</span></p></body></html>"%(out[0],out[1],out[2]), None))
     @pyqtSlot()
     def ADC_ON(self):
             spi.open(0,0)
@@ -604,6 +607,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def All_is_Clear(self):#корректное завершение
         self.tempthreadcontrol(0)
+        self.timelabel.stop()
         #time.sleep(1)        
 
         spi.close()
@@ -968,7 +972,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lockbut.setStyleSheet(metrocss.SetButtons_passive)
         self.lockthread=LockThread(self.lock_signal)
         
-        
+        #---------------timelabel--------------------------
+        self.timelabel=TimeThread(self.time_signal)
+        self.time_signal.connect(self.time_msg, QtCore.Qt.QueuedConnection)
+        self.timelabel.isRun=True
+        self.timelabel.start()
         #---------initial default prog set-----------
         if sets['start_prog1']==1:
             self.set_prog(1,1)

@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /
+cd /home/pi/Documents/Monkey\ Studio/Projects
+python metro_uic.py
