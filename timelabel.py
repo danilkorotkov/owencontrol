@@ -13,19 +13,19 @@ class TimeThread(QtCore.QThread): # time label
             s=time.localtime()
             
             if s[4]<10:
-                minutes='0'+str(s[4])
+                minutes='0'+str(s.tm_min)
             else:
-                minutes=str(s[4])
+                minutes=str(s.tm_min)
                 
             if s[3]<10:
-                hours='0'+str(s[3])
+                hours='0'+str(s.tm_hour)
             else:
-                hours=str(s[3])
+                hours=str(s.tm_hour)
                 
             if s[5]<10:
-                secundes='0'+str(s[5])
+                secundes='0'+str(s.tm_sec)
             else:
-                secundes=str(s[5])
+                secundes=str(s.tm_sec)
             
             month=_fromUtf8(calendar.month_name[s.tm_mon])
             day=str(s[2])
