@@ -281,7 +281,7 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         textItem.setHtml(self.SetInfoPanelText ('Выдержка '+t))
         textItem.setPos(lx+20, ly+145)
 # Начало
-        s=time.gmtime(float(x0))
+        s=time.localtime(float(x0))
         min=str(s[4])
         if len(min)==1:
             min='0'+min
@@ -294,7 +294,7 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         textItem.setHtml(self.SetInfoPanelText ('Начало '+t))
         textItem.setPos(lx+20, ly+165)
 # Окончание
-        s=time.gmtime(float(x1))
+        s=time.localtime(float(x1))
         min=str(s[4])
         if len(min)==1:
             min='0'+min
