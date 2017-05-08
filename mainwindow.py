@@ -32,6 +32,8 @@ GPIO.setmode(GPIO.BCM)
 A=21
 B=20
 C=16
+Cont1=17
+Cont2=27
 OEBuff=23
 Fan2=24
 Fan1=25
@@ -45,7 +47,6 @@ FT=15
 Mux=(C,B,A)
 spi = spidev.SpiDev()
 pi = pigpio.pi() # Connect to local host.
-
 #--------------temp measure-----------------------
 class TempThread(QtCore.QThread): # работа с АЦП в потоке 
     def __init__(self, temp_signal, parent=None):
@@ -114,12 +115,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     iconLock=QtGui.QIcon()
     iconUnlock=QtGui.QIcon()
     MTemp1=0.0 #храним вычисленное значение температуры
-    Mtemp2=0.0
+    MTemp2=0.0
     WaitText="ГОТОВ К ЗАПУСКУ"
     WorkText="НАГРЕВ "
     DelayText="ВЫДЕРЖКА "
-    coldStart1=1 #коррекция скорости при отключении датчиков
-    coldStart2=1
+    coldStart1=0 #коррекция скорости при отключении датчиков
+    coldStart2=0
     coldStart=0 #запуск программы после загрузки
     Heater1=0 # температура тэнов
     Heater2=0
@@ -278,14 +279,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.startTime1=datetime.datetime.now()
             self.justStarted1=1
             self.State1=0
-            
+            GPIO.output(Cont1, 1)
             file_name_1=str(int(time.time()))+'_1_'+str(self.T1)+'.txt'
             
         if self.justStarted2==0 and self.Line_35:
             self.startTime2=datetime.datetime.now()
             self.justStarted2=1
             self.State2=0
-            
+            GPIO.output(Cont2, 1)
             file_name_2=str(int(time.time()))+'_2_'+str(self.T2)+'.txt'
             
         if self.Line_65==1:
@@ -357,6 +358,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     pi.hardware_PWM(SSRPwm0, Freq, 0)
                     self.State1=0
                     self.justStarted1=0
+                    GPIO.output(Cont1, 0)
             save_log(file_name_1,self.MTemp1,i,self.State1,self.Fan1_On, self.Heater1)
             
         if self.Line_35==1:
@@ -428,6 +430,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     pi.hardware_PWM(SSRPwm1, Freq, 0)
                     self.State2=0
                     self.justStarted2=0
+                    GPIO.output(Cont2, 0)
             save_log(file_name_2,self.MTemp2,p,self.State2,self.Fan2_On, self.Heater2)                    
 
 
@@ -585,6 +588,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.startHeat1=0
                 self.startDelay1=0
                 self.justStarted1=0
+                GPIO.output(Cont1, 0)
                 
                 self.Fan1Interval=FI
                 self.Fan1Time=FT
@@ -600,6 +604,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.startHeat2=0
                 self.startDelay2=0
                 self.justStarted2=0
+                GPIO.output(Cont2, 0)
                 
                 self.Fan2Interval=FI
                 self.Fan2Time=FT
@@ -608,7 +613,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def All_is_Clear(self):#корректное завершение
         self.tempthreadcontrol(0)
         self.timelabel.stop()
-        #time.sleep(1)        
 
         spi.close()
         pi.stop()
@@ -801,17 +805,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def ShowResults(self, Tin):#вывод температуры на рабочую зону
         #-------------рассчитываем температуры по разрешенным датчикам---------
         if sets['sensor1_1']==1 and sets['sensor1_2']==1:
-            self.MTemp1=(float(Tin[1])+float(Tin[2]))/2
+            alph=self.coldStart1&1
+            alph=2-int(not(alph))
+            self.MTemp1 = (self.MTemp1*self.coldStart1 + (float(Tin[1])+float(Tin[2]))/2 )/alph
             self.MainTemp1.setHtml(metrocss.Show_Main_Temp ("%.1f" %self.MTemp1 ))
             self.Channel1.setHtml(metrocss.Show_temp(Tin[1]))
             self.Channel2.setHtml(metrocss.Show_temp(Tin[2]))
         elif sets['sensor1_1']==0 and sets['sensor1_2']==1:
-            self.MTemp1=float(Tin[2])
+            self.MTemp1=(self.MTemp1*self.coldStart1+float(Tin[2]))/alph
             self.MainTemp1.setHtml(metrocss.Show_Main_Temp ("%.1f" %self.MTemp1 ))
             self.Channel1.setHtml(metrocss.Show_temp("NaN"))
             self.Channel2.setHtml(metrocss.Show_temp(Tin[2]))
         elif sets['sensor1_1']==1 and sets['sensor1_2']==0:
-            self.MTemp1=float(Tin[1])
+            self.MTemp1=(self.MTemp1*self.coldStart1+float(Tin[1]))/alph
             self.MainTemp1.setHtml(metrocss.Show_Main_Temp ("%.1f" %self.MTemp1 ))
             self.Channel1.setHtml(metrocss.Show_temp(Tin[1]))
             self.Channel2.setHtml(metrocss.Show_temp("NaN"))
@@ -822,18 +828,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.Heater1=Tin[3]
         self.Heater2=Tin[6]
         
+        bet=self.coldStart2&1
+        bet=2-int(not(bet))
         if sets['sensor2_1']==1 and sets['sensor2_2']==1:
-            self.MTemp2=(float(Tin[4])+float(Tin[5]))/2
+            self.MTemp2=(self.MTemp2*self.coldStart2+(float(Tin[4])+float(Tin[5]))/2) / bet
             self.MainTemp2.setHtml(metrocss.Show_Main_Temp ("%.1f" %self.MTemp2 ))
             self.Channel4.setHtml(metrocss.Show_temp(Tin[4]))
             self.Channel5.setHtml(metrocss.Show_temp(Tin[5]))
         elif sets['sensor2_1']==0 and sets['sensor2_2']==1:
-            self.MTemp2=float(Tin[5])
+            self.MTemp2=(self.MTemp2*self.coldStart2+float(Tin[5]))/bet
             self.MainTemp2.setHtml(metrocss.Show_Main_Temp ("%.1f" %self.MTemp2 ))
             self.Channel4.setHtml(metrocss.Show_temp("NaN"))
             self.Channel5.setHtml(metrocss.Show_temp(Tin[5]))
         elif sets['sensor2_1']==1 and sets['sensor2_2']==0:
-            self.MTemp2=float(Tin[4])
+            self.MTemp2=(self.MTemp2*self.coldStart2+float(Tin[4]))/bet
             self.MainTemp2.setHtml(metrocss.Show_Main_Temp ("%.1f" %self.MTemp2 ))
             self.Channel4.setHtml(metrocss.Show_temp(Tin[4]))
             self.Channel5.setHtml(metrocss.Show_temp("NaN"))
@@ -844,11 +852,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.TRate1.append(self.MTemp1)
                 self.TRate2.append(self.MTemp2)
                 
-            self.coldStart0=1
+            self.coldStart=1
         else:
             self.TRate1.append(self.MTemp1)
             self.TRate2.append(self.MTemp2)
             
+        
         if self.coldStart1==0:
             self.TRate1=[]
             for i in range(60):
@@ -863,8 +872,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.coldStart2=1
         
         #-------------вычисляем скорость изменения температуры по стеку---------
-        self.deltaTRate1=self.MTemp1-self.TRate1.pop(0)
-        self.deltaTRate2=self.MTemp2-self.TRate2.pop(0)
+        self.deltaTRate1=(self.deltaTRate1+self.MTemp1-self.TRate1.pop(0))/2
+        self.deltaTRate2=(self.deltaTRate2+self.MTemp2-self.TRate2.pop(0))/2
         
         self.Rate1.setHtml(metrocss.Show_Rate(self.deltaTRate1))
         self.Rate2.setHtml(metrocss.Show_Rate(self.deltaTRate2))
@@ -1101,7 +1110,7 @@ def save_log(file_name,temp,power,state,fan_state,heater):
     t=time.time()
     if file_name != '':
         with open("logs/"+file_name, "a" ) as log_file:
-            log_file.write(str(t)+','+str(temp)+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
+            log_file.write(str(t)+','+str(round(temp,1))+','+str(power)+','+str(state)+','+str(fan_state)+','+str(heater)+'\n')
 
 
 def read_settings():
@@ -1145,8 +1154,8 @@ def call_board_ini():
     spi.open(0,0)
     spi.max_speed_hz = 40000
 
-    GPIO.setup([Fan1, Fan2, OEBuff, SSRPwm0, SSRPwm1], GPIO.OUT)
-    GPIO.output([Fan1, Fan2, OEBuff, SSRPwm0, SSRPwm0], 0)
+    GPIO.setup([Fan1, Fan2, OEBuff, SSRPwm0, SSRPwm1, Cont1, Cont2], GPIO.OUT)
+    GPIO.output([Fan1, Fan2, OEBuff, SSRPwm0, SSRPwm0, Cont1, Cont2], 0)
 
     pi.set_PWM_dutycycle(SSRPwm0, 0) # без этого не отрабатывает первый запуск
     pi.set_PWM_dutycycle(SSRPwm1, 0) # после выхода и нового запуска кода
