@@ -119,6 +119,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.graphicsView.clear()
             self.delLegend()
             self.graphicsView.setTitle(title=u'Пустой файл')
+            return
 
         # Временный массив для разбиения строк на составлящие
 
