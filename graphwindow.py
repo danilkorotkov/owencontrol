@@ -107,7 +107,12 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.graphicsView.setTitle(title=u'Ошибка чтения файла')
             return
 
-        if lines[-1] == '':
+        if lines[-1] == '': #работаем с битыми логами
+            lines.pop()
+        else:
+            pass
+
+        if len(lines[-1]) not in range(27, 34):
             lines.pop()
         else:
             pass
