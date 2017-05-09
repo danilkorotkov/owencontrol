@@ -81,7 +81,13 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         for i in range(len(lf)):  # Pomeschaem imena log failov v vizual'nij spisok
             self.listWidget.addItem(self.lf1[i][1])
-
+        
+        try:
+            self.listWidget.setCurrentRow(0)
+            self.letsgo()
+        except IndexError:
+            pass
+        
     def letsgo(self):  # выбор файла в списке
         self.statusBar.showMessage(
             u"Имя лога: " + self.lf1[self.listWidget.currentRow()][0])  # Vivodim coobschenie v statusBar.
