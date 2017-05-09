@@ -140,7 +140,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
                 if itera < length:
                     itera += 1
         except IndexError:
-            delt = delt = timeAxis[-1]
+            delt = timeAxis[-1]
             index = -1
         cpw = []  # clear memory
         lines = []
