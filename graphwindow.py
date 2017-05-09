@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from operator import methodcaller
-import sys, os, time, string
+import os, time
 from PyQt4 import QtCore, QtGui, uic
 from PyQt4.Qt import Qt
 import numpy as np
@@ -198,9 +198,9 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.graphicsView.setLimits(xMin=0, xMax=timeAxis[-1], yMin=minimum, yMax=maximum)
 
-        if maxPower != 0:
-            powerLine = (maximum - minimum) * powerLine / (
-            maxPower * 2) + minimum  # Нормировка на 1 и далее нормировка на примерно половину высоты графика температуры
+        if maxPower != 0: #нормировка на примерно половину высоты графика температуры
+            powerLine = (maximum - minimum) * powerLine / (maxPower * 2) + minimum
+
         stateLine = (maximum - minimum) * stateLine / 2.1 + minimum
         fanLine = (maximum - minimum) * fanLine / 2.2 + minimum
 
@@ -234,19 +234,19 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
         delay = str(delay) + ' мин'  # Выдержка
 
         s = time.localtime(float(x0))
-        m = str(s[4])
+        m = str(s.tm_min)
         if len(m) == 1:
             m = '0' + m
-        h = str(s[3])
+        h = str(s.tm_hour)
         if len(h) == 1:
             h = '0' + h
         t_start = h + ':' + m  # Начало
 
         s = time.localtime(float(x1))
-        m = str(s[4])
+        m = str(s.tm_min)
         if len(m) == 1:
             m = '0' + m
-        h = str(s[3])
+        h = str(s.tm_hour)
         if len(h) == 1:
             h = '0' + h
         t_end = h + ':' + m  # # Окончание
