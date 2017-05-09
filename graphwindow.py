@@ -71,7 +71,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 l = u"3,5 м"
 
-            if s[4] < 10:
+            if s.tm_min < 10:
                 minutes = '0' + str(s.tm_min)
             else:
                 minutes = str(s.tm_min)
