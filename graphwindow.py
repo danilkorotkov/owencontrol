@@ -11,6 +11,7 @@ import pyqtgraph as pg
 MainInterfaceWindow = "graphwindow.ui" 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(MainInterfaceWindow)
 
+DEGREE  = u"\u00B0" + 'C'
 
 class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
     """MainWindow inherits QMainWindow"""
@@ -177,7 +178,7 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         except AttributeError:
             pass
 
-        self.graphicsView.setLabel('left', u'Температура, с')
+        self.graphicsView.setLabel('left', u'Температура, '+DEGREE)
         self.graphicsView.setLabel('bottom', u'Время, мин')
 
         self.graphicsView.showGrid(x=True, y=True, alpha=1)
