@@ -27,12 +27,12 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowModality(QtCore.Qt.WindowModal)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.listWidget.verticalScrollBar().setStyleSheet(_fromUtf8(
-            "QScrollBar:vertical {width: 35px; background: rgb(194, 194, 194); margin: 0px;}\n"
-            "QScrollBar::handle:vertical {min-height: 35x;}\n"
-            "QScrollBar::sub-line:vertical {subcontrol-position: top; subcontrol-origin: content; height: 70px; }\n"
-            "QScrollBar::add-line:vertical {subcontrol-position: bottom; subcontrol-origin: content; height: 70px; }\n"
+            "QScrollBar:vertical {width: 40px; background: rgb(194, 194, 194); margin: 0px;}\n"
+            "QScrollBar::handle:vertical {min-height: 40px;}\n"
+            "QScrollBar::sub-line:vertical {subcontrol-position: top; subcontrol-origin: margin; height: 70px; }\n"
+            "QScrollBar::add-line:vertical {subcontrol-position: bottom; subcontrol-origin: margin; height: 70px; }\n"
             "QScrollBar::down-arrow:vertical, QScrollBar::up-arrow:vertical {background: NONE;}\n"
-            "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"))
+            "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: NONE;}"))
 
         self.ExitButton.pressed.connect(self.exit)
         self.listWidget.itemClicked.connect(self.letsgo)
@@ -166,12 +166,27 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         maxPower=powerLine.max()
         maxHeat=heatLine.max()
 
-        if maxPower != 0:
-            powerLine=maxTemp*powerLine/(maxPower*2) # Нормировка на 1 и далее нормировка на примерно половину высоты графика температуры
-        stateLine=maxTemp*stateLine/2.1
-        fanLine=maxTemp*fanLine/2.2
+        minTemp=tempLine.min()
+        minHeat = heatLine.min()
+
+        minimum = minTemp
+        maximum = ust
+
+        if minTemp > minHeat: minimum = minHeat
+
+        if maximum < maxHeat: maximum = maxHeat
+        elif maximum < maxTemp: maximum = maxTemp
 
         timeAxis = timeAxis/60
+
+        self.graphicsView.setLimits(xMin=0, xMax=timeAxis[-1], yMin=minimum, yMax=maximum)
+
+        if maxPower != 0:
+            powerLine=(maximum-minimum)*powerLine/(maxPower*2) + minimum # Нормировка на 1 и далее нормировка на примерно половину высоты графика температуры
+        stateLine=(maximum-minimum)*stateLine/2.1 + minimum
+        fanLine=(maximum-minimum)*fanLine/2.2 + minimum
+
+
         self.graphicsView.clear()
         try:
             self.graphicsView.plotItem.legend.items = []
@@ -184,17 +199,22 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         #self.graphicsView.getAxis('bottom').setStyle(tickTextOffset=300)
 
         self.graphicsView.showGrid(x=True, y=True, alpha=1)
-        self.graphicsView.plot(x=timeAxis, y=tempLine, name=self.SetInfoPanelText('Температура'),pen=pg.mkPen('k', width=3))
-        self.graphicsView.plot(x=timeAxis, y=powerLine, name=self.SetInfoPanelText('Мощность'), pen=pg.mkPen('r', width=3))
-        self.graphicsView.plot(x=timeAxis, y=heatLine, name=self.SetInfoPanelText('ТЭНы'), pen=pg.mkPen('y', width=4))
-        self.graphicsView.plot(x=timeAxis, y=stateLine, name=self.SetInfoPanelText('Состояние'), pen=pg.mkPen('m', width=3))
-        self.graphicsView.plot(x=timeAxis, y=fanLine, name=self.SetInfoPanelText('Вентиляторы'), pen=pg.mkPen('g', width=3))
 
-        self.graphicsView.plot(x=timeAxis, y=ustLine, name=self.SetInfoPanelText('Уставка '+str(ust)), pen=pg.mkPen('b', width=3))
-        #self.graphicsView.addLine(y=maxHeat, name=self.SetInfoPanelText('ТЭН'), pen=pg.mkPen('y', width=3))
-        #self.graphicsView.addLine(x=timeAxis[index], name=self.SetInfoPanelText('Выдержка'), pen=pg.mkPen('m', width=3))
+        self.graphicsView.plot(x=timeAxis, y=tempLine, name=self.SetInfoPanelText('Температура'),
+                               pen=pg.mkPen('k', width=3))
+        self.graphicsView.plot(x=timeAxis, y=powerLine, name=self.SetInfoPanelText('Мощность'),
+                               pen=pg.mkPen('r', width=3))
+        self.graphicsView.plot(x=timeAxis, y=heatLine, name=self.SetInfoPanelText('ТЭНы'),
+                               pen=pg.mkPen('y', width=3))
+        self.graphicsView.plot(x=timeAxis, y=stateLine, name=self.SetInfoPanelText('Состояние'),
+                               pen=pg.mkPen('m', width=3))
+        self.graphicsView.plot(x=timeAxis, y=fanLine, name=self.SetInfoPanelText('Вентиляторы'),
+                               pen=pg.mkPen('g', width=3))
+        self.graphicsView.plot(x=timeAxis, y=ustLine, name=self.SetInfoPanelText('Уставка ' + str(ust)),
+                               pen=pg.mkPen('b', width=4))
+        # self.graphicsView.addLine(y=maxHeat, name=self.SetInfoPanelText('ТЭН'), pen=pg.mkPen('y', width=3))
+        # self.graphicsView.addLine(x=timeAxis[index], name=self.SetInfoPanelText('Выдержка'), pen=pg.mkPen('m', width=3))
 
-        #dx=timeAxis[-1]-delt
         delay=dx//60
         delay=int(delay%60)
         delay=str(delay) +' мин' # Выдержка
