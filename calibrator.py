@@ -59,7 +59,7 @@ class TempThread(QtCore.QThread): # работа с АЦП в потоке
             M0 += dato
             muestras += 1
         dato = M0/50
-        V = long(dato) * 2.5 / 8192.0;    
+        V = dato * 2.5 / 8192.0;    
         return V
 
     def SetChannel(self,Ch):
@@ -116,7 +116,7 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
         super(Calibrator, self).__init__(parent)
         Ui_Calibrator.__init__(self)
         self.setupUi( self )
-        self.move(300, 33)
+        self.move(315, 33)
         self.setWindowModality(QtCore.Qt.WindowModal)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.a=read_settings(self.a)
@@ -368,10 +368,10 @@ class Calibrator ( QtGui.QMainWindow, Ui_Calibrator ):
             #print A0
         
             Chann='Channel'+str(self.C)
-            self.a[Chann][0]=self.A3
-            self.a[Chann][1]=self.A2
-            self.a[Chann][2]=self.A1
-            self.a[Chann][3]=self.A0
+            self.a[Chann][0]=round(self.A3,4)
+            self.a[Chann][1]=round(self.A2,4)
+            self.a[Chann][2]=round(self.A1,4)
+            self.a[Chann][3]=round(self.A0,4)
             
             
             eq= ("%.4fx" % self.A3+u'\xB3'+self.sign(self.A2) + \

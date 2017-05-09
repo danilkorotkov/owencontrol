@@ -1,4 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import sys
 
 # import PyQt4 QtCore and QtGui modules
@@ -22,4 +24,7 @@ if __name__ == '__main__':
     QObject.connect( app, SIGNAL( 'lastWindowClosed()' ), app, SLOT( 'quit()' ) )
 
     # execute application
-    sys.exit( app.exec_() )
+    #sys.exit( app.exec_() )
+    app.exec_()
+    app.deleteLater()
+    sys.exit()    

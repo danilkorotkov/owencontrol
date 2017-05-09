@@ -2416,6 +2416,42 @@ color:black;
      </size>
     </property>
    </widget>
+   <widget class="QLabel" name="labeloftime">
+    <property name="geometry">
+     <rect>
+      <x>805</x>
+      <y>836</y>
+      <width>150</width>
+      <height>148</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string notr="true"/>
+    </property>
+    <property name="statusTip">
+     <string notr="true"/>
+    </property>
+    <property name="whatsThis">
+     <string notr="true"/>
+    </property>
+    <property name="accessibleName">
+     <string notr="true"/>
+    </property>
+    <property name="accessibleDescription">
+     <string notr="true"/>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+font: 18pt &quot;Free Helvetian&quot;;
+color:black;
+ font-weight: bold;
+ text-align: center;
+ background-color: rgb(114, 208, 244);</string>
+    </property>
+    <property name="text">
+     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:400;&quot;&gt;24 Апрель&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:400;&quot;&gt;22:33:33&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:400;&quot;&gt;Вторник&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
    <zorder>Channel1</zorder>
    <zorder>Channel3</zorder>
    <zorder>Channel2</zorder>
@@ -2465,6 +2501,7 @@ color:black;
    <zorder>Fan2_Allow</zorder>
    <zorder>InfoPanel2</zorder>
    <zorder>lockbut</zorder>
+   <zorder>labeloftime</zorder>
   </widget>
  </widget>
  <resources/>
