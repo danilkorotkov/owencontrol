@@ -6,6 +6,8 @@ import sys
 # import PyQt4 QtCore and QtGui modules
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import os
+os.environ["DISPLAY"] = ":0"
 
 from mainwindow import MainWindow
 
