@@ -36,10 +36,9 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         self.ExitButton.pressed.connect(self.exit)
         self.listWidget.itemClicked.connect(self.letsgo)
 
-        self.sceneW = int(self.graphicsView.width() * 0.9)
-        self.sceneH = int(self.graphicsView.height() * 0.9)
-        self.graphicsView.addLegend(size=None, offset=(self.sceneW * 0.8, self.sceneH * 0.25))
-
+        self.sceneW = int(self.graphicsView.width())
+        self.sceneH = int(self.graphicsView.height())
+        self.graphicsView.addLegend(size=None, offset=(self.sceneW * 0.77, self.sceneH * 0.22))
         self.searchLogs()
  
     def __del__ ( self ):
@@ -103,7 +102,7 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         except IOError:
             self.graphicsView.setTitle(title=u'Ошибка чтения файла')
             return
-        
+
         if lines[-1]=='':
             lines.pop()
         else:
@@ -143,10 +142,8 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
                 if iter<length:
                     iter+=1
         except IndexError:
-            #self.graphicsView.setTitle(title=u'Ошибка')
             delt=delt=timeAxis[-1]
             index=-1
-            #return
         cpw=[] # clear memory
         lines=[]
 
@@ -177,22 +174,20 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         self.graphicsView.clear()
         try:
             self.graphicsView.plotItem.legend.items = []
-            while self.graphicsView.plotItem.legend.layout.count() > 0:
-                self.graphicsView.plotItem.legend.layout.removeAt(0)
         except AttributeError:
             pass
 
         self.graphicsView.setLabel('left', u'Температура, с')
         self.graphicsView.setLabel('bottom', u'Время, мин')
 
-        self.graphicsView.showGrid(x=True, y=True, alpha=None)
+        self.graphicsView.showGrid(x=True, y=True, alpha=1)
         self.graphicsView.plot(x=timeAxis, y=tempLine, name=self.SetInfoPanelText('Температура'),pen=pg.mkPen('k', width=3))
         self.graphicsView.plot(x=timeAxis, y=powerLine, name=self.SetInfoPanelText('Мощность'), pen=pg.mkPen('r', width=3))
         self.graphicsView.plot(x=timeAxis, y=heatLine, name=self.SetInfoPanelText('ТЭНы'), pen=pg.mkPen('y', width=4))
         self.graphicsView.plot(x=timeAxis, y=stateLine, name=self.SetInfoPanelText('Состояние'), pen=pg.mkPen('m', width=3))
         self.graphicsView.plot(x=timeAxis, y=fanLine, name=self.SetInfoPanelText('Вентиляторы'), pen=pg.mkPen('g', width=3))
 
-        self.graphicsView.plot(x=timeAxis, y=ustLine, name=self.SetInfoPanelText('Уставка'+str(ust)), pen=pg.mkPen('b', width=3))
+        self.graphicsView.plot(x=timeAxis, y=ustLine, name=self.SetInfoPanelText('Уставка '+str(ust)), pen=pg.mkPen('b', width=3))
         #self.graphicsView.addLine(y=maxHeat, name=self.SetInfoPanelText('ТЭН'), pen=pg.mkPen('y', width=3))
         #self.graphicsView.addLine(x=timeAxis[index], name=self.SetInfoPanelText('Выдержка'), pen=pg.mkPen('m', width=3))
 
