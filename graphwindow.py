@@ -178,8 +178,10 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
         except AttributeError:
             pass
 
-        self.graphicsView.setLabel('left', u'Температура, '+DEGREE)
-        self.graphicsView.setLabel('bottom', u'Время, мин')
+        labelStyle = {'color': '#000', 'font-size': '12pt'}
+        self.graphicsView.setLabel('left', u'Температура, '+DEGREE, **labelStyle)
+        self.graphicsView.setLabel('bottom', u'Время, мин', **labelStyle)
+        #self.graphicsView.getAxis('bottom').setStyle(tickTextOffset=300)
 
         self.graphicsView.showGrid(x=True, y=True, alpha=1)
         self.graphicsView.plot(x=timeAxis, y=tempLine, name=self.SetInfoPanelText('Температура'),pen=pg.mkPen('k', width=3))
@@ -221,11 +223,9 @@ class GraphWindow (QtGui.QMainWindow, Ui_MainWindow):
 
 
     def SetInfoPanelText (self,text):
-        out=_translate("GraphWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-    "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-    "p, li { white-space: pre-wrap; }\n"
-    "</style></head><body style=\" font-family:\'Free Helvetian\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-    "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">%s</p></body></html>"%text, None)
+        out = _translate("GraphWindow",
+                         "<body style=\" font-family:\'Free Helvetian\'; font-size:14pt;\"><p>%s</p></body>" % text,
+                         None)
         return out
 
 try:
