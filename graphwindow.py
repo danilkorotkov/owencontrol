@@ -88,6 +88,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
         except IndexError:
             pass
 
+
     def letsgo(self):  # выбор файла в списке
         self.statusBar.showMessage(
             u"Имя лога: " + self.lf1[self.listWidget.currentRow()][0])  # Vivodim coobschenie v statusBar.
@@ -104,19 +105,19 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
             with open(self.path + file_name) as f:
                 lines = f.read().splitlines()  # Читаем файл по строкам
         except IOError:
+            self.graphicsView.clear()
             self.graphicsView.setTitle(title=u'Ошибка чтения файла')
             return
 
-        if lines[-1] == '': #работаем с битыми логами
-            lines.pop()
-        else:
-            pass
+        try:
+            if lines[-1] == '': #работаем с битыми логами
+                lines.pop()
+            if len(lines[-1]) not in range(27, 34):
+                lines.pop()
+        except IndexError:
+            self.graphicsView.clear()
+            self.graphicsView.setTitle(title=u'Пустой файл')
 
-        if len(lines[-1]) not in range(27, 34):
-            lines.pop()
-        else:
-            pass
-        
         # Временный массив для разбиения строк на составлящие
 
         cpw = list(map(methodcaller("split", ","), lines))
@@ -136,7 +137,8 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
                 fanLine.append(float(cpw[i][4]))
                 heatLine.append(float(cpw[i][5]))
         except ValueError:
-            self.graphicsView.setTitle(title=u'Ошибка')
+            self.graphicsView.clear()
+            self.graphicsView.setTitle(title=u'Ошибка координат')
             return
         length = len(timeAxis)
         delt = 0
