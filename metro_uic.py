@@ -7,7 +7,7 @@ import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os
-os.environ["DISPLAY"] = ":0" #remote
+os.environ["DISPLAY"] = ":0" #remote a
 
 from mainwindow import MainWindow
 
