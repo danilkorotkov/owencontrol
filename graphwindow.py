@@ -106,6 +106,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
                 lines = f.read().splitlines()  # Читаем файл по строкам
         except IOError:
             self.graphicsView.clear()
+            self.delLegend()
             self.graphicsView.setTitle(title=u'Ошибка чтения файла')
             return
 
@@ -116,6 +117,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
                 lines.pop()
         except IndexError:
             self.graphicsView.clear()
+            self.delLegend()
             self.graphicsView.setTitle(title=u'Пустой файл')
 
         # Временный массив для разбиения строк на составлящие
@@ -138,6 +140,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
                 heatLine.append(float(cpw[i][5]))
         except ValueError:
             self.graphicsView.clear()
+            self.delLegend()
             self.graphicsView.setTitle(title=u'Ошибка координат')
             return
         length = len(timeAxis)
@@ -201,10 +204,7 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
         fanLine = (maximum - minimum) * fanLine / 2.2 + minimum
 
         self.graphicsView.clear()
-        try:
-            self.graphicsView.plotItem.legend.items = []
-        except AttributeError:
-            pass
+        self.delLegend()
 
         labelStyle = {'color': '#000', 'font-size': '12pt'}
         self.graphicsView.setLabel('left', u'Температура, ' + DEGREE, **labelStyle)
@@ -260,6 +260,11 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
                          None)
         return out
 
+    def delLegend(self):
+        try:
+            self.graphicsView.plotItem.legend.items = []
+        except AttributeError:
+            pass
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
