@@ -1,4 +1,4 @@
 # owencontrol
 powder coating owen control terminal
 
-Monkey Studio project
+Monkey Studio project + PyCharm Prof
