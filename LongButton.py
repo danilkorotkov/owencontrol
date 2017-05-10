@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt4 import QtGui, QtCore
 import time
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
 class LongButton( QtGui.QPushButton ):
     def __init__ ( self, parent = None, name=None, *args, **kwargs ):
