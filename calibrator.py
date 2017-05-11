@@ -14,7 +14,6 @@ GPIO.setmode(GPIO.BCM)
 A = 21
 B = 20
 C = 16
-sets = {}
 
 Mux = (C, B, A)
 spi = spidev.SpiDev()
@@ -398,7 +397,7 @@ def get_coeff(sets, Temp):
 
 
 def read_settings():
-    global sets
+    sets={}
     try:
         with open('settings.txt', 'rt') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='=', quotechar='|')
