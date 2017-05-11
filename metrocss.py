@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys, time
 from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import Qt
-#from PyQt4.QtGui import QIcon, QAction, QKeySequence
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8

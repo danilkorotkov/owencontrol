@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import sys, time, string, calendar
+import time, calendar
 from PyQt4 import QtCore
 #--------------temp measure-----------------------
 class TimeThread(QtCore.QThread): # time label
@@ -12,23 +12,23 @@ class TimeThread(QtCore.QThread): # time label
         while self.isRun:
             s=time.localtime()
             
-            if s[4]<10:
+            if s.tm_min<10:
                 minutes='0'+str(s.tm_min)
             else:
                 minutes=str(s.tm_min)
                 
-            if s[3]<10:
+            if s.tm_hour<10:
                 hours='0'+str(s.tm_hour)
             else:
                 hours=str(s.tm_hour)
                 
-            if s[5]<10:
+            if s.tm_sec<10:
                 secundes='0'+str(s.tm_sec)
             else:
                 secundes=str(s.tm_sec)
             
             month=_fromUtf8(calendar.month_name[s.tm_mon])
-            day=str(s[2])
+            day=str(s.tm_mday)
             dayname=_fromUtf8(calendar.day_name[s.tm_wday])
             out=['','','']
             

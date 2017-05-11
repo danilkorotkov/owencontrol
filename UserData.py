@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import sys, time, string
 from PyQt4 import QtCore, QtGui, uic
 from PyQt4.Qt import Qt
-from PyQt4.QtGui import *
-from PyQt4.QtCore import pyqtSlot, QObject, SIGNAL
 import metrocss
 
 InputWindow = "datainput.ui"

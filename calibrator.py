@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy
-import sys, spidev, os, time, string, csv, math
+import spidev, time, csv, math
 from PyQt4 import QtCore, QtGui, uic
 from PyQt4.Qt import Qt
-from PyQt4.QtGui import *
-from PyQt4.QtCore import QObject, SIGNAL
 import RPi.GPIO as GPIO
 
 MainInterfaceWindow = "calibrator.ui"
@@ -47,13 +45,13 @@ class TempThread(QtCore.QThread):  # работа с АЦП в потоке
         muestras = 0
         while muestras <= 49:
             adc = spi.xfer2([0, 0])
-            hi = (adc[0] & 0x1F);
-            low = (adc[1] & 0xFC);  # FE for B, FC for C chip (MCP3201-B/C) ©Danil
-            dato = (hi << 8) | low;
+            hi = (adc[0] & 0x1F)
+            low = (adc[1] & 0xFC)  # FE for B, FC for C chip (MCP3201-B/C) ©Danil
+            dato = (hi << 8) | low
             M0 += dato
             muestras += 1
         dato = M0 / 50
-        V = dato * 2.5 / 8192.0;
+        V = dato * 2.5 / 8192.0
         return V
 
     def SetChannel(self, Ch):
@@ -68,25 +66,6 @@ class Calibrator(QtGui.QMainWindow, Ui_Calibrator):
     """Calibrator inherits QMainWindow"""
     temp_signal = QtCore.pyqtSignal(float)
 
-    a = {
-        'start_prog1': 1,
-        'start_prog2': 1,
-        'OH_ctrl_1': 1,
-        'OH_ctrl_2': 1,
-        'sensor1_1': 1,
-        'sensor1_2': 1,
-        'sensor2_1': 1,
-        'sensor2_2': 1,
-        'Fan1_Allow': 1,
-        'Fan2_Allow': 1,
-        'Channel1': [3.5708, 5.3255, 319.73, -249.65],
-        'Channel2': [3.5708, 5.3255, 319.73, -249.65],
-        'Channel3': [3.5708, 5.3255, 319.73, -249.65],
-        'Channel4': [3.5708, 5.3255, 319.73, -249.65],
-        'Channel5': [3.5708, 5.3255, 319.73, -249.65],
-        'Channel6': [3.5708, 5.3255, 319.73, -249.65],
-        'Counter1': 0,
-        'Counter2': 0}
     Temp = [0, 175, 266.5, 558]
     A3 = 0
     A2 = 0
@@ -112,7 +91,7 @@ class Calibrator(QtGui.QMainWindow, Ui_Calibrator):
         self.move(315, 33)
         self.setWindowModality(QtCore.Qt.WindowModal)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.a = read_settings(self.a)
+        self.a = read_settings()
         self.Coeff = get_coeff(self.a, self.Temp)
         self.finish_signal = finish_signal
 
@@ -418,7 +397,8 @@ def get_coeff(sets, Temp):
     return coeff
 
 
-def read_settings(sets):
+def read_settings():
+    global sets
     try:
         with open('settings.txt', 'rt') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='=', quotechar='|')
