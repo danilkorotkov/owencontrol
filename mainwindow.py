@@ -1336,7 +1336,7 @@ def call_board_ini():
             s_log(_name + ' ' + _firm)
             print 'Версия ПО: ' + result
             it = False
-        except Owen.OwenProtocolError:
+        except (Owen.OwenProtocolError, NameError):
             counter += 1
             print(u'Модуль ввода недоступен ' + str(counter) + ' ' + u'раз')
             s_log(u'Модуль ввода недоступен ' + str(counter) + ' ' + u'раз')
@@ -1347,8 +1347,6 @@ def call_board_ini():
                     COM.open()
             except NameError:
                 pass
-        except NameError:
-            pass
 
     it = True
     counter = 0
@@ -1363,7 +1361,7 @@ def call_board_ini():
             print 'Версия ПО: ' + result
             s_log(_name + ' ' + _firm)
             it = False
-        except Owen.OwenProtocolError:
+        except (Owen.OwenProtocolError, NameError):
             counter += 1
             print('Модуль вывода недоступен ' + str(counter) + ' раз')
             s_log(u'Модуль вывода недоступен ' + str(counter) + ' ' + u'раз')
@@ -1374,8 +1372,6 @@ def call_board_ini():
                     COM.open()
             except NameError:
                 pass
-        except NameError:
-            pass
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
