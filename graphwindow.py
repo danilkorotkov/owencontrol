@@ -67,16 +67,16 @@ class GraphWindow(QtGui.QMainWindow, Ui_MainWindow):
             s = time.localtime(float(t))
             l = lf[i].split('_')[1]
             if l == "1":
-                l = u"6,5 м"
+                l = u"6,5"
             else:
-                l = u"3,5 м"
+                l = u"3,5"
 
             if s.tm_min < 10:
                 minutes = '0' + str(s.tm_min)
             else:
                 minutes = str(s.tm_min)
             s = '%s-%s-%s %s:%s' % (
-            str(s.tm_year)[2:], str(s.tm_mon), str(s.tm_mday), str(s.tm_hour), minutes) + u" Линия: " + l
+            str(s.tm_year)[2:], str(s.tm_mon), str(s.tm_mday), str(s.tm_hour), minutes) + u" Л: " + l
             self.lf1[i].append(s)
 
         for i in range(len(lf)):  # Pomeschaem imena log failov v vizual'nij spisok

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>1024</height>
+    <height>968</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,7 +152,7 @@ background-color: rgb(114, 208, 244);
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'HelveticaNeueCyr'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Free Helvetian'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="textInteractionFlags">
@@ -858,51 +858,6 @@ color:black;
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="Calibr">
-    <property name="geometry">
-     <rect>
-      <x>651</x>
-      <y>836</y>
-      <width>150</width>
-      <height>148</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="cursor">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="contextMenuPolicy">
-     <enum>Qt::NoContextMenu</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border-style: outset;
-font: 16pt &quot;Free Helvetian&quot;;
-color:black;
- text-align: center;
- background-color: rgb(194, 194, 194);
-</string>
-    </property>
-    <property name="text">
-     <string>Калибровка</string>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>26</width>
-      <height>80</height>
-     </size>
-    </property>
-   </widget>
    <widget class="QLabel" name="Set1">
     <property name="geometry">
      <rect>
@@ -1050,7 +1005,7 @@ color:black;
    <widget class="QPushButton" name="HistoryGraph">
     <property name="geometry">
      <rect>
-      <x>475</x>
+      <x>169</x>
       <y>836</y>
       <width>150</width>
       <height>148</height>
@@ -1914,7 +1869,7 @@ background-color: rgb(114, 208, 244);
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'HelveticaNeueCyr'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Free Helvetian'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="textInteractionFlags">
@@ -2419,7 +2374,7 @@ color:black;
    <widget class="QLabel" name="labeloftime">
     <property name="geometry">
      <rect>
-      <x>805</x>
+      <x>15</x>
       <y>836</y>
       <width>150</width>
       <height>148</height>
@@ -2452,6 +2407,103 @@ color:black;
      <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:400;&quot;&gt;24 Апрель&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:24pt; font-weight:400;&quot;&gt;22:33:33&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:400;&quot;&gt;Вторник&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="ErrorPanel">
+    <property name="geometry">
+     <rect>
+      <x>651</x>
+      <y>840</y>
+      <width>611</width>
+      <height>148</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="cursor" stdset="0">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+font: 14pt &quot;Free Helvetian&quot;;
+padding: -7px;
+padding-left: 10px;
+color:black;
+background-color: rgb(114, 208, 244);</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Free Helvetian'; font-size:14pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::NoTextInteraction</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="OrderBut">
+    <property name="geometry">
+     <rect>
+      <x>475</x>
+      <y>836</y>
+      <width>150</width>
+      <height>148</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="cursor">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+font: 16pt &quot;Free Helvetian&quot;;
+color:black;
+ text-align: center;
+ background-color: rgb(194, 194, 194);
+</string>
+    </property>
+    <property name="text">
+     <string>1C</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>26</width>
+      <height>80</height>
+     </size>
+    </property>
+   </widget>
    <zorder>Channel1</zorder>
    <zorder>Channel3</zorder>
    <zorder>Channel2</zorder>
@@ -2473,7 +2525,6 @@ color:black;
    <zorder>p1_4</zorder>
    <zorder>Over_Heat_Ctrl_1</zorder>
    <zorder>Sensor1_1</zorder>
-   <zorder>Calibr</zorder>
    <zorder>Sensor1_2</zorder>
    <zorder>Fan1_Allow</zorder>
    <zorder>HistoryGraph</zorder>
@@ -2502,6 +2553,8 @@ color:black;
    <zorder>InfoPanel2</zorder>
    <zorder>lockbut</zorder>
    <zorder>labeloftime</zorder>
+   <zorder>ErrorPanel</zorder>
+   <zorder>OrderBut</zorder>
   </widget>
  </widget>
  <resources/>

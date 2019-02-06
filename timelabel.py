@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import time, calendar
+import time, datetime, calendar
 from PyQt4 import QtCore
 #--------------temp measure-----------------------
 class TimeThread(QtCore.QThread): # time label
@@ -11,7 +11,7 @@ class TimeThread(QtCore.QThread): # time label
     def run(self):
         while self.isRun:
             s=time.localtime()
-            
+            a = datetime.datetime.now()
             if s.tm_min<10:
                 minutes='0'+str(s.tm_min)
             else:
@@ -38,8 +38,10 @@ class TimeThread(QtCore.QThread): # time label
             
             
             self.time_signal.emit(out)
-            
-            time.sleep(1)
+
+            sleepparam = float(str(datetime.datetime.now()-a)[-6:])/1000000
+            #print 1 - sleepparam
+            time.sleep(1 - sleepparam)
 
     def stop(self):
         self.isRun=False
